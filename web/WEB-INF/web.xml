@@ -7,6 +7,10 @@
         <servlet-name>ServletHello</servlet-name>
         <servlet-class>ServletHello</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ProfileServlet</servlet-name>
+        <servlet-class>ProfileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServletHello</servlet-name>
         <url-pattern>/hello</url-pattern>
