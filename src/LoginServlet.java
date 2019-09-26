@@ -40,20 +40,7 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
-        if (username.equals(request.getParameter("username")) && password.equals(request.getParameter("password"))) {
-            HttpSession session = request.getSession();
-            User user = new User(request.getParameter("username"), request.getParameter("password"));
-            session.setAttribute("user", user);
-            System.out.println(request.getParameter("remember"));
-            if (request.getParameter("remember") != null) {
-                System.out.println("Remember for a month");
-                Cookie userCookie = new Cookie("username", request.getParameter("username"));
-                Cookie passCookie = new Cookie("password", request.getParameter("password"));
-                userCookie.setMaxAge(120); //2592000 seconds = 30 days
-                passCookie.setMaxAge(120); //2592000 seconds = 30 days
-                response.addCookie(userCookie);
-                response.addCookie(passCookie);
-            }
+        if (User.login(request, response)) {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/profile");
         } else {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/login");
@@ -62,26 +49,8 @@ public class LoginServlet extends HttpServlet {
 
     private void createPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter writer = response.getWriter();
-        Cookie userCookie = null;
-        Cookie passCookie = null;
-        String cookieName = "username";
-        String cookiePass = "password";
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie c : cookies) {
-                if (cookieName.equals(c.getName())) {
-                    userCookie = c;
-                }
-                if (cookiePass.equals(c.getName())) {
-                    passCookie = c;
-                }
-            }
-        }
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-
-        if ((userCookie == null || passCookie == null) && user == null) {
+        if (!User.isLogined(request)) {
             writer.println(html);
         } else {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/profile");
