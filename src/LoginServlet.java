@@ -49,8 +49,8 @@ public class LoginServlet extends HttpServlet {
                 System.out.println("Remember for a month");
                 Cookie userCookie = new Cookie("username", request.getParameter("username"));
                 Cookie passCookie = new Cookie("password", request.getParameter("password"));
-                userCookie.setMaxAge(60); //2592000 seconds = 30 days
-                passCookie.setMaxAge(60); //2592000 seconds = 30 days
+                userCookie.setMaxAge(120); //2592000 seconds = 30 days
+                passCookie.setMaxAge(120); //2592000 seconds = 30 days
                 response.addCookie(userCookie);
                 response.addCookie(passCookie);
             }
