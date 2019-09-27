@@ -18,7 +18,7 @@ public class ProfileServlet extends HttpServlet {
             "<a href=\"http://localhost:8080/Infa_war_exploded/logout\" title=\"logout\">Logout</a>" +
             "<div align=\"center\">\n" +
             "    <h1><p>Hello, ";
-    String html2 = ".<br> How are you?</p></h1><br><table><tr><th>Product ID</th><th>Product name</th><th></th><tr>\n";
+    String html2 = ".<br> How are you?</p></h1><br><table><tr><th>c</th><th>Product name</th><th></th><tr>\n";
 
     String html3 = "</table><br><form action=\"profile\" method=\"POST\"><input type=\"text\" name=\"good\"><input type=\"submit\" value=\"Add\"></form></div>\n" +
             "</body>\n" +
@@ -63,8 +63,9 @@ public class ProfileServlet extends HttpServlet {
         String page = html1 + username + html2;
         String htmlGoods = "";
         ArrayList<Good> goods = User.getGoods();
+        int counter = 1;
         for (Good g : goods) {
-            htmlGoods += "<tr><td>" + g.getId() + "</td><td>" + g.getName() + "</td><td><form action=\"profile\" method=\"POST\"><input type=\"submit\" name=\"Delete" + g.getId() + "\" value=\"Delete\" ></input></form></td></tr>";
+            htmlGoods += "<tr><td>" + counter++ + "</td><td>" + g.getName() + "</td><td><form action=\"profile\" method=\"POST\"><input type=\"submit\" name=\"Delete" + g.getId() + "\" value=\"Delete\" ></input></form></td></tr>";
         }
         page += htmlGoods + html3;
         writer.println(page);

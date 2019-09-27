@@ -17,15 +17,7 @@ public class User {
     }
 
     public static boolean removeGood(Good good) {
-        goods.remove(good);
-        int counter = 1;
-        for (Good g : goods) {
-            if (Integer.parseInt(g.getId()) > counter) {
-                g.setId(String.valueOf(counter));
-            }
-            counter++;
-        }
-        return true;
+        return goods.remove(good);
     }
 
     public static boolean addGood(String goodName) {
