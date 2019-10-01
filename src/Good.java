@@ -1,15 +1,13 @@
 public class Good {
     private String id;
     private String name;
+    private double price;
 
 
-    public Good(String id, String name) {
+    public Good(String id, String name, double price) {
         this.id = id;
         this.name = name;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        this.price = price;
     }
 
     public String getId() {
@@ -18,5 +16,9 @@ public class Good {
 
     public String getName() {
         return name;
+    }
+
+    public double getPrice() {
+        return price;
     }
 }

@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
-        if (User.login(request, response)) {
+        if (BusinessLogic.login(request, response)) {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/profile");
         } else {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/login");
@@ -50,7 +50,7 @@ public class LoginServlet extends HttpServlet {
     private void createPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter writer = response.getWriter();
 
-        if (!User.isLogined(request)) {
+        if (!BusinessLogic.isLogined(request)) {
             writer.println(html);
         } else {
             response.sendRedirect("http://localhost:8080/Infa_war_exploded/profile");

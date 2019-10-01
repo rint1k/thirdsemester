@@ -7,7 +7,7 @@ import java.io.IOException;
 public class LogoutServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        User.logout(request, response);
+        BusinessLogic.logout(request, response);
         response.sendRedirect("http://localhost:8080/Infa_war_exploded/login");
     }
 }

@@ -18,17 +18,23 @@ public class ProfileServlet extends HttpServlet {
             "<a href=\"http://localhost:8080/Infa_war_exploded/logout\" title=\"logout\">Logout</a>" +
             "<div align=\"center\">\n" +
             "    <h1><p>Hello, ";
-    String html2 = ".<br> How are you?</p></h1><br><table><tr><th>c</th><th>Product name</th><th></th><tr>\n";
+    String html2 = ".<br> How are you?</p></h1><br><table><tr><th>N</th><th>Product name</th><th>Price</th><th></th><tr>\n";
 
-    String html3 = "</table><br><form action=\"profile\" method=\"POST\"><input type=\"text\" name=\"good\"><input type=\"submit\" value=\"Add\"></form></div>\n" +
+    String html3 = "</table><br><form action=\"profile\" method=\"POST\"><input type=\"text\" name=\"good\" placeholder=\"Good's name\"><input type=\"text\" name=\"price\" placeholder=\"Price\"><input type=\"submit\" value=\"Add\"></form><br><br>" +
+            "<form action=\"profile\" method=\"POST\"><input type=\"submit\" name=\"maxPrice\" value=\"Show the most expensive\"></form>";
+    String html5 = "</div>\n" +
             "</body>\n" +
             "</html>";
+
+    String html4 = "";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
 
         if (request.getParameter("good") != null) {
-            User.addGood(request.getParameter("good"));
+            BusinessLogic.addGood(request.getParameter("good"), Double.parseDouble(request.getParameter("price")));
+        } else if (request.getParameter("maxPrice") != null) {
+            html4 = "<br><br><h1>The most expensive good is " + BusinessLogic.getMaxPricedGood() + "</h1>";
         } else {
             delete(request);
         }
@@ -40,7 +46,7 @@ public class ProfileServlet extends HttpServlet {
         ArrayList<Good> goods = User.getGoods();
         for (Good g : goods) {
             if (request.getParameter("Delete" + g.getId()) != null) {
-                User.removeGood(g);
+                BusinessLogic.removeGood(g);
                 break;
             }
         }
@@ -58,16 +64,21 @@ public class ProfileServlet extends HttpServlet {
         }
     }
 
-    private void send(String username, HttpServletResponse response) throws IOException {
+    private void send(String name, HttpServletResponse response) throws IOException {
         PrintWriter writer = response.getWriter();
-        String page = html1 + username + html2;
+        String page = html1 + name + html2;
         String htmlGoods = "";
         ArrayList<Good> goods = User.getGoods();
         int counter = 1;
         for (Good g : goods) {
-            htmlGoods += "<tr><td>" + counter++ + "</td><td>" + g.getName() + "</td><td><form action=\"profile\" method=\"POST\"><input type=\"submit\" name=\"Delete" + g.getId() + "\" value=\"Delete\" ></input></form></td></tr>";
+            htmlGoods += "<form action=\"profile\" method=\"POST\"><tr><td>" + counter++ + "</td><td>" + g.getName() + "</td><td>" + g.getPrice() + " Py6</td><td><input type=\"submit\" name=\"Delete" + g.getId() + "\" value=\"Delete\" ></input></td></tr></form>";
         }
         page += htmlGoods + html3;
+        if (!html4.equals("")) {
+            page += html4;
+            System.out.println(html4);
+        }
+        page += html5;
         writer.println(page);
     }
 }
