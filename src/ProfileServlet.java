@@ -33,20 +33,26 @@ public class ProfileServlet extends HttpServlet {
 
         if (request.getParameter("good") != null) {
             BusinessLogic.addGood(request.getParameter("good"), Double.parseDouble(request.getParameter("price")));
+            html4 = "";
+            System.out.println("add");
         } else if (request.getParameter("maxPrice") != null) {
+            System.out.println("highest price");
             html4 = "<br><br><h1>The most expensive good is " + BusinessLogic.getMaxPricedGood() + "</h1>";
         } else {
+            System.out.println("delete");
             delete(request);
+            html4 = "";
         }
         response.sendRedirect("http://localhost:8080/Infa_war_exploded/profile");
 
     }
 
     private void delete(HttpServletRequest request) {
-        ArrayList<Good> goods = User.getGoods();
+        ArrayList<Good> goods = BusinessLogic.getGoodFromDB();
         for (Good g : goods) {
             if (request.getParameter("Delete" + g.getId()) != null) {
-                BusinessLogic.removeGood(g);
+                System.out.println(g.getId());
+                BusinessLogic.removeGood(g.getId());
                 break;
             }
         }
@@ -68,7 +74,7 @@ public class ProfileServlet extends HttpServlet {
         PrintWriter writer = response.getWriter();
         String page = html1 + name + html2;
         String htmlGoods = "";
-        ArrayList<Good> goods = User.getGoods();
+        ArrayList<Good> goods = BusinessLogic.getGoodFromDB();
         int counter = 1;
         for (Good g : goods) {
             htmlGoods += "<form action=\"profile\" method=\"POST\"><tr><td>" + counter++ + "</td><td>" + g.getName() + "</td><td>" + g.getPrice() + " Py6</td><td><input type=\"submit\" name=\"Delete" + g.getId() + "\" value=\"Delete\" ></input></td></tr></form>";
@@ -76,7 +82,6 @@ public class ProfileServlet extends HttpServlet {
         page += htmlGoods + html3;
         if (!html4.equals("")) {
             page += html4;
-            System.out.println(html4);
         }
         page += html5;
         writer.println(page);

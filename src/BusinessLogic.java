@@ -2,9 +2,34 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.Result;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class BusinessLogic {
 
+    private static Statement statement;
+    private static DAO d;
+
+    static ArrayList<Good> getGoodFromDB() {
+        ArrayList<Good> goods = new ArrayList<>();
+        System.out.println(goods);
+        try {
+            statement = d.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM good_db");
+            while (rs.next()) {
+                System.out.println(rs);
+                goods.add(new Good(String.valueOf(rs.getInt(1)), rs.getString(2), rs.getDouble(3)));
+            }
+            return goods;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(goods);
+        return goods;
+    }
 
     static boolean isLogined(HttpServletRequest request) {
         Cookie userCookie = null;
@@ -49,6 +74,11 @@ public class BusinessLogic {
         HttpSession session = request.getSession();
         session.invalidate();
         System.out.println(session);
+        try {
+            DAO.closeCon();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -65,29 +95,48 @@ public class BusinessLogic {
                 response.addCookie(userCookie);
                 response.addCookie(passCookie);
             }
+                d = new DAO();
             return true;
         } else {
             return false;
         }
     }
 
-    public static boolean removeGood(Good good) {
-        return DAO.getUser().goods.remove(good);
+    public static boolean removeGood(String id) {
+        try {
+            statement = d.getConnection().createStatement();
+            int result = statement.executeUpdate("DELETE FROM good_db WHERE id = " + Integer.parseInt(id));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public static boolean addGood(String goodName, double price) {
-        int lastId = Integer.parseInt(User.goods.get(User.goods.size() - 1).getId()) + 1;
-        return DAO.getUser().goods.add(new Good(String.valueOf(lastId), goodName, price));
+        try {
+            statement = d.getConnection().createStatement();
+            int result = statement.executeUpdate("INSERT INTO good_db (name, price) VALUE (\"" + goodName + "\", " + price + ")");
+            System.out.println(result);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     public static String getMaxPricedGood() {
-        double maxPrice = 0;
         String goodName = "";
-        for (Good g : User.getGoods()) {
-            if (maxPrice < g.getPrice()) {
-                maxPrice = g.getPrice();
-                goodName = g.getName();
+        double maxPrice = 0;
+        try {
+            statement = d.getConnection().createStatement();
+            ResultSet rs = statement.executeQuery("SELECT * FROM good_db");
+            while (rs.next()) {
+                if(maxPrice < rs.getDouble(3)){
+                    maxPrice = rs.getDouble(3);
+                    goodName = rs.getString(2);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return goodName;
     }
